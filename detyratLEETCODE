@@ -1,0 +1,928 @@
+#include <iostream>
+#include <vector>
+#include <stack>
+#include <algorithm> 
+#include <map> 
+#include <queue>
+#include <unordered_map>
+#include <list>
+#include <string>
+using namespace std;
+
+class ListNode {
+public:
+    int val;
+    ListNode* next;
+    ListNode(int x) : val(x), next(NULL) {}
+};
+
+class TreeNode {
+public:
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+};
+
+// Solution classes...
+
+class Solution0 {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {   
+        unordered_map<int, int> mp;
+        for(int i = 0; i < nums.size(); i++){
+            if(mp.find(target - nums[i]) == mp.end())
+                mp[nums[i]] = i;
+            else
+                return {mp[target - nums[i]], i};
+        }
+        return {-1, -1};
+    }
+};
+
+class Solution1 {
+public:
+    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {
+        ListNode* head = new ListNode(0);
+        ListNode* now = head;
+        ListNode* a = list1;
+        ListNode* b = list2;
+        while(a != NULL && b != NULL) {
+            if(a->val <= b->val) {
+                now->next = a;
+                a = a->next;
+            } else {
+                now->next = b;
+                b = b->next;
+            }
+            now = now->next;
+        }
+        if(a == NULL) {
+            now->next = b;
+        } else if(b == NULL) {
+            now->next = a;
+        }
+        return head->next;
+    }
+};
+
+// Define the rest of the solution classes...
+
+class Solution2 {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if (head == NULL || head->next == NULL) {
+            return head;
+        }
+        ListNode* a = head;
+        ListNode* b = head->next;
+        while(b != NULL) {
+            while(b != NULL && b->val == a->val) {
+                b = b->next;
+                a->next = b;
+            }
+            a = b;
+            if (b != NULL) b = b->next;
+        }
+        return head;
+    }
+};
+
+class Solution3 {
+public:
+    bool hasCycle(ListNode *head) {
+        ListNode* a = head;
+        ListNode* b = head;
+        while(a != NULL && a->next != NULL) {
+            b = b->next;
+            a = a->next->next;
+            if(a == b) {
+                return true;
+            }
+        }
+        return false;
+    }
+};
+
+class Solution4 {
+public:
+    ListNode* removeElements(ListNode* head, int val) {
+        if(head == NULL) {
+            return head;
+        }
+        while(head != NULL && head->val == val) {
+            head = head->next;
+        }
+        ListNode* a = head;
+        ListNode* b = NULL;
+        while(a != NULL) {
+            if(a->val == val) {
+                b->next = a->next;
+                a = a->next;
+            } else {
+                b = a;
+                a = a->next;
+            }
+        }
+        return head;
+    }
+};
+
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* tashmi = head;
+        ListNode* kalumi = NULL;
+        ListNode* next = NULL;
+        while(tashmi != NULL) {
+            next = tashmi->next;
+            tashmi->next = kalumi;
+            kalumi = tashmi;
+            tashmi = next;
+        }
+        return kalumi;
+    }
+};
+
+class MyStack {
+public:
+    queue<int> q1;
+    queue<int> q2;
+    MyStack() {}
+    void push(int x) {
+        q2.push(x);
+        while(!q1.empty()) {
+            int b = q1.front();
+            q2.push(b);
+            q1.pop();
+        }
+        swap(q1, q2);
+    }
+    int pop() {
+        int g = q1.front();
+        q1.pop();
+        return g;
+    }
+    int top() {
+        return q1.front();
+    }
+    bool empty() {
+        return q1.empty();
+    }
+};
+
+class MyQueue {
+    stack<int> s1;
+    stack<int> s2;
+public:
+    MyQueue() {}
+    void push(int x) {
+        s1.push(x);
+    }
+    int pop() {
+        int b;
+        while(!s1.empty()) {
+            b = s1.top();
+            s2.push(b);
+            s1.pop();
+        }
+        s2.pop();
+        int g = b;
+        while(!s2.empty()) {
+            b = s2.top();
+            s2.pop();
+            s1.push(b);
+        }
+        return g;
+    }
+    int peek() {
+        int b;
+        while(!s1.empty()) {
+            b = s1.top();
+            s2.push(b);
+            s1.pop();
+        }
+        int g = b;
+        while(!s2.empty()) {
+            b = s2.top();
+            s2.pop();
+            s1.push(b);
+        }
+        return g;
+    }
+    bool empty() {
+        return s1.empty();
+    }
+};
+
+class Solution5 {
+public:
+    int firstUniqChar(string s) {
+        for (int i = 0; i < s.length(); i++) {
+            int z = s[i];
+            bool isUnique = true;
+            for (int j = 0; j < s.length(); j++) {
+                if (i != j && z == s[j]) {
+                    isUnique = false;
+                    break;
+                }
+            }
+            if (isUnique) {
+                return i;
+            }
+        }
+        return -1;
+    }
+};
+
+class Solution6 {
+public:
+    void inorder(TreeNode* root, vector<int>& temp) {
+        if(root == NULL)
+            return;
+        inorder(root->left, temp);
+        temp.push_back(root->val);
+        inorder(root->right, temp);
+    }
+    int getMinimumDifference(TreeNode* root) {
+        vector<int> temp;
+        inorder(root, temp);
+        int mini = temp[1];
+        for(int i = 0; i < temp.size()-1; i++) {
+            int tempo = temp[i+1] - temp[i];
+            if(mini > tempo) {
+                mini = tempo;
+            }
+        }
+        return mini;
+    }
+};
+
+class Solution7 {
+public:
+    void inorder(TreeNode* root, vector<int> &t) {
+        if(root != NULL) {
+            inorder(root->left, t);
+            t.push_back(root->val);
+            inorder(root->right, t);
+        }
+    }
+    bool findTarget(TreeNode* root, int k) {
+        vector<int> t;
+        inorder(root, t);
+        int i = 0; 
+        int j = t.size() - 1;
+        while(i < j) {
+            int temp = t[i] + t[j];
+            if(temp == k)
+                return true;
+            if(temp < k)
+                i++;
+            else
+                j--;
+        }
+        return false;
+    }
+};
+
+class Solution8 {
+public:
+    TreeNode* searchBST(TreeNode* root, int val) {
+        while (root != NULL) {
+            if (root->val == val) {
+                return root; 
+            } else if (root->val > val) {
+                root = root->left; 
+            } else {
+                root = root->right; 
+            }
+        }
+        return NULL;
+    }
+};
+
+class Solution9 {
+public:
+    int numJewelsInStones(string jewels, string stones) {
+        unordered_map<char, int> map;
+        int count = 0;
+        for(int i = 0; i < jewels.length(); i++) {
+            map[jewels[i]]++;
+        }
+        for(auto x: stones) {
+            if(map.find(x) != map.end()) {
+                count++;
+            }
+        }
+        return count;
+    }
+};
+
+class Solution10 {
+public:
+    void inorder(TreeNode* root, int& diferenca, int& kalume) {
+        if(root == NULL) return;
+        inorder(root->left, diferenca, kalume);
+        if(kalume != -1) {
+            if(diferenca > root->val - kalume) {
+                diferenca = root->val - kalume;
+            }
+        }
+        kalume = root->val;    
+        inorder(root->right, diferenca, kalume);
+    }
+    int minDiffInBST(TreeNode* root) {
+        int diferenca = INT_MAX;
+        int kalume = -1;
+        inorder(root, diferenca, kalume);
+        return diferenca;
+    }
+};
+
+class RecentCounter {
+public:
+    queue<int> q;
+    RecentCounter() {}
+    int ping(int t) {
+        int vlera = t - 3000;
+        while(!q.empty() && vlera > q.front()) {
+            q.pop();
+        }
+        q.push(t);
+        return q.size();
+    }
+};
+
+class Solution11 {
+public:
+    int rangeSumBST(TreeNode* root, int low, int high) {
+        if (root == NULL) {
+            return 0;
+        }
+        int sum = 0;
+        if (root->val >= low && root->val <= high) {
+            sum += root->val;
+        }
+        if (root->val > low) {
+            sum += rangeSumBST(root->left, low, high);
+        }
+        if (root->val < high) {
+            sum += rangeSumBST(root->right, low, high);
+        }
+        return sum;
+    }
+};
+class Solution12 {
+public:
+
+//Time O(m+n) SpaceO(n)
+    int findPermutationDifference(string s, string t) {
+        unordered_map<char, int> mp;
+        for(int i = 0; i < t.length(); i++){
+            mp[t[i]] = i;
+        }
+        int res = 0;
+        for(int i = 0; i < s.length(); i++){
+            res += abs( i - mp[s[i]]);
+        }
+        return res;
+    }
+};
+
+class Solution13 {
+ public:
+ //Time O(n) Space O(1)
+  int timeRequiredToBuy(vector<int>& tickets, int k) {
+    int ans = 0;
+
+    for (int i = 0; i < tickets.size(); ++i){
+      if (i <= k){
+        ans += min(tickets[i], tickets[k]);
+      }
+      else{
+        ans += min(tickets[i], tickets[k] - 1);
+      }
+    }
+    return ans;
+    
+  }
+};
+
+class Solution14 {
+public:
+
+//Time O(n+m) space O(n)
+    string makeGood(string s) {
+        stack<char> stack;
+        
+        for (int i = 0; i < s.length(); i++) {
+            char b = s[i];
+            if (!stack.empty() && abs(b - stack.top()) == 32) {
+                stack.pop();
+            } else {
+                stack.push(b);
+            }
+        }
+        
+        string result;
+        while (!stack.empty()) {
+            result = stack.top() + result;
+            stack.pop();
+        }
+        
+        return result;
+    }
+};
+
+class Solution15 {
+public:
+//Time O(n)  Space O(n)
+    int numIdenticalPairs(vector<int>& nums) {
+        map<int,int>mp;
+        int result = 0;
+
+        for(int i:nums){
+            if(mp.count(i)){
+                result += mp[i];
+            }
+            mp[i]++;
+        }
+        return result;
+    }
+};
+
+class Solution16 {
+public:
+//Time O(n+m) Space O(n) 
+    vector<int> smallerNumbersThanCurrent(vector<int>& nums) {
+        vector<int> ans = nums;
+        unordered_map<int, int> m;
+        sort(ans.begin(), ans.end());
+        for(int i=nums.size()-1; i>=0; i--)
+            m[ans[i]] = i;
+        for(int i=0; i<nums.size(); i++)
+            nums[i] = m[nums[i]];
+        return nums;
+    }
+};
+
+// Helper functions...
+
+ListNode* createLinkedList(vector<int>& values) {
+    if (values.empty()) return nullptr;
+    ListNode* head = new ListNode(values[0]);
+    ListNode* current = head;
+    for (size_t i = 1; i < values.size(); ++i) {
+        current->next = new ListNode(values[i]);
+        current = current->next;
+    }
+    return head;
+}
+
+void printLinkedList(ListNode* head) {
+    while (head != nullptr) {
+        cout << head->val;
+        if (head->next != nullptr) {
+            cout << " -> ";
+        }
+        head = head->next;
+    }
+    cout << endl;
+}
+
+TreeNode* insertTreeNode(TreeNode* root, int val) {
+    if (root == nullptr) {
+        return new TreeNode(val);
+    }
+    if (val < root->val) {
+        root->left = insertTreeNode(root->left, val);
+    } else {
+        root->right = insertTreeNode(root->right, val);
+    }
+    return root;
+}
+
+TreeNode* createBinarySearchTree(vector<int>& values) {
+    TreeNode* root = nullptr;
+    for (int val : values) {
+        root = insertTreeNode(root, val);
+    }
+    return root;
+};
+
+
+
+
+void printMenu() {
+    cout << "Choose a function to execute:\n";
+    cout << "0. Two Sum\n";
+    cout << "1. Merge Two Sorted Lists\n";
+    cout << "2. Delete Duplicates from Sorted List\n";
+    cout << "3. Check if Linked List has Cycle\n";
+    cout << "4. Remove Elements from Linked List\n";
+    cout << "5. Reverse Linked List\n";
+    cout << "6. Implement Stack using Queues\n";
+    cout << "7. Implement Queue using Stacks\n";
+    cout << "8. First Unique Character in String\n";
+    cout << "9. Minimum Absolute Difference in BST\n";
+    cout << "10. Find Target in BST\n";
+    cout << "11. Search in BST\n";
+    cout << "12. Number of Jewels in Stones\n";
+    cout << "13. Minimum Difference in BST\n";
+    cout << "14. Recent Counter\n";
+    cout << "15. Range Sum of BST\n";
+    cout << "16. Permutation difference\n";
+    cout << "17. Time required to buy tickets\n";
+    cout << "18. Make the string great\n";
+    cout << "19. Number of identical pairs\n";
+    cout << "20. How many numbers are smaller number than current\n";
+}
+
+int main() {
+    int choice;
+    printMenu();
+    cin >> choice;
+
+    switch (choice) {
+        case 0: {
+            Solution0 solution;
+            int n, target;
+            cout << "Enter the number of elements: ";
+            cin >> n;
+            vector<int> nums(n);
+            cout << "Enter the elements: ";
+            for (int i = 0; i < n; ++i) {
+                cin >> nums[i];
+            }
+            cout << "Enter the target: ";
+            cin >> target;
+            vector<int> result = solution.twoSum(nums, target);
+            cout << "Result: [" << result[0] << ", " << result[1] << "]\n";
+            break;
+        }
+        case 1: {
+            Solution1 solution;
+            int m, n;
+            cout << "Enter the number of elements in list1: ";
+            cin >> m;
+            vector<int> values1(m);
+            cout << "Enter the elements of list1: ";
+            for (int i = 0; i < m; ++i) {
+                cin >> values1[i];
+            }
+            ListNode* list1 = createLinkedList(values1);
+            cout << "Enter the number of elements in list2: ";
+            cin >> n;
+            vector<int> values2(n);
+            cout << "Enter the elements of list2: ";
+            for (int i = 0; i < n; ++i) {
+                cin >> values2[i];
+            }
+            ListNode* list2 = createLinkedList(values2);
+            ListNode* result = solution.mergeTwoLists(list1, list2);
+            cout << "Merged list: ";
+            printLinkedList(result);
+            break;
+        }
+        case 2: {
+            Solution2 solution;
+            int m;
+            cout << "Enter the number of elements in the list: ";
+            cin >> m;
+            vector<int> values(m);
+            cout << "Enter the elements: ";
+            for (int i = 0; i < m; ++i) {
+                cin >> values[i];
+            }
+            ListNode* list = createLinkedList(values);
+            ListNode* result = solution.deleteDuplicates(list);
+            cout << "List after removing duplicates: ";
+            printLinkedList(result);
+            break;
+        }
+        case 3: {
+            Solution3 solution;
+            int m;
+            cout << "Enter the number of elements in the list: ";
+            cin >> m;
+            vector<int> values(m);
+            cout << "Enter the elements: ";
+            for (int i = 0; i < m; ++i) {
+                cin >> values[i];
+            }
+            ListNode* list = createLinkedList(values);
+            bool hasCycle = solution.hasCycle(list);
+            cout << "Does the list have a cycle? " << (hasCycle ? "Yes" : "No") << endl;
+            break;
+        }
+        case 4: {
+            Solution4 solution;
+            int m, val;
+            cout << "Enter the number of elements in the list: ";
+            cin >> m;
+            vector<int> values(m);
+            cout << "Enter the elements: ";
+            for (int i = 0; i < m; ++i) {
+                cin >> values[i];
+            }
+            cout << "Enter the value to remove: ";
+            cin >> val;
+            ListNode* list = createLinkedList(values);
+            ListNode* result = solution.removeElements(list, val);
+            cout << "List after removing elements: ";
+            printLinkedList(result);
+            break;
+        }
+        case 5: {
+            Solution solution;
+            int m;
+            cout << "Enter the number of elements in the list: ";
+            cin >> m;
+            vector<int> values(m);
+            cout << "Enter the elements: ";
+            for (int i = 0; i < m; ++i) {
+                cin >> values[i];
+            }
+            ListNode* list = createLinkedList(values);
+            ListNode* result = solution.reverseList(list);
+            cout << "Reversed list: ";
+            printLinkedList(result);
+            break;
+        }
+        case 6: {
+            MyStack myStack;
+            int choice, value;
+            cout << "Stack operations: 1. Push 2. Pop 3. Top 4. Empty 5. Exit\n";
+            while (true) {
+                cout << "Enter your choice: ";
+                cin >> choice;
+                if (choice == 1) {
+                    cout << "Enter value to push: ";
+                    cin >> value;
+                    myStack.push(value);
+                    cout << value << " pushed into stack\n";
+                } else if (choice == 2) {
+                    if (!myStack.empty()) {
+                        cout << "Popped: " << myStack.pop() << endl;
+                    } else {
+                        cout << "Stack is empty\n";
+                    }
+                } else if (choice == 3) {
+                    if (!myStack.empty()) {
+                        cout << "Top: " << myStack.top() << endl;
+                    } else {
+                        cout << "Stack is empty\n";
+                    }
+                } else if (choice == 4) {
+                    cout << "Is stack empty? " << (myStack.empty() ? "Yes" : "No") << endl;
+                } else if (choice == 5) {
+                    break;
+                } else {
+                    cout << "Invalid choice\n";
+                }
+            }
+            break;
+        }
+        case 7: {
+            MyQueue myQueue;
+            int choice, value;
+            cout << "Queue operations: 1. Push 2. Pop 3. Peek 4. Empty 5. Exit\n";
+            while (true) {
+                cout << "Enter your choice: ";
+                cin >> choice;
+                if (choice == 1) {
+                    cout << "Enter value to push: ";
+                    cin >> value;
+                    myQueue.push(value);
+                    cout << value << " pushed into queue\n";
+                } else if (choice == 2) {
+                    if (!myQueue.empty()) {
+                        cout << "Popped: " << myQueue.pop() << endl;
+                    } else {
+                        cout << "Queue is empty\n";
+                    }
+                } else if (choice == 3) {
+                    if (!myQueue.empty()) {
+                        cout << "Front: " << myQueue.peek() << endl;
+                    } else {
+                        cout << "Queue is empty\n";
+                    }
+                } else if (choice == 4) {
+                    cout << "Is queue empty? " << (myQueue.empty() ? "Yes" : "No") << endl;
+                } else if (choice == 5) {
+                    break;
+                } else {
+                    cout << "Invalid choice\n";
+                }
+            }
+            break;
+        }
+        case 8: {
+            Solution5 solution;
+            string s;
+            cout << "Enter the string: ";
+            cin >> s;
+            int result = solution.firstUniqChar(s);
+            cout << "Index of first unique character: " << result << endl;
+            break;
+        }
+        case 9: {
+            Solution6 solution;
+            int n;
+            cout << "Enter the number of elements in the BST: ";
+            cin >> n;
+            vector<int> values(n);
+            cout << "Enter the elements: ";
+            for (int i = 0; i < n; ++i) {
+                cin >> values[i];
+            }
+            TreeNode* root = createBinarySearchTree(values);
+            int result = solution.getMinimumDifference(root);
+            cout << "Minimum absolute difference in BST: " << result << endl;
+            break;
+        }
+        case 10: {
+            Solution7 solution;
+            int n, k;
+            cout << "Enter the number of elements in the BST: ";
+            cin >> n;
+            vector<int> values(n);
+            cout << "Enter the elements: ";
+            for (int i = 0; i < n; ++i) {
+                cin >> values[i];
+            }
+            cout << "Enter the target value: ";
+            cin >> k;
+            TreeNode* root = createBinarySearchTree(values);
+            bool result = solution.findTarget(root, k);
+            cout << "Is the target found? " << (result ? "Yes" : "No") << endl;
+            break;
+        }
+        case 11: {
+            Solution8 solution;
+            int n, val;
+            cout << "Enter the number of elements in the BST: ";
+            cin >> n;
+            vector<int> values(n);
+            cout << "Enter the elements: ";
+            for (int i = 0; i < n; ++i) {
+                cin >> values[i];
+            }
+            cout << "Enter the value to search: ";
+            cin >> val;
+            TreeNode* root = createBinarySearchTree(values);
+            TreeNode* result = solution.searchBST(root, val);
+            cout << "Search result: " << (result ? "Found" : "Not found") << endl;
+            break;
+        }
+        case 12: {
+            Solution9 solution;
+            string jewels, stones;
+            cout << "Enter the jewels string: ";
+            cin >> jewels;
+            cout << "Enter the stones string: ";
+            cin >> stones;
+            int result = solution.numJewelsInStones(jewels, stones);
+            cout << "Number of jewels in stones: " << result << endl;
+            break;
+        }
+        case 13: {
+            Solution10 solution;
+            int n;
+            cout << "Enter the number of elements in the BST: ";
+            cin >> n;
+            vector<int> values(n);
+            cout << "Enter the elements: ";
+            for (int i = 0; i < n; ++i) {
+                cin >> values[i];
+            }
+            TreeNode* root = createBinarySearchTree(values);
+            int result = solution.minDiffInBST(root);
+            cout << "Minimum difference in BST: " << result << endl;
+            break;
+        }
+        case 14: {
+            RecentCounter recentCounter;
+            int t;
+            cout << "Enter the times (enter -1 to stop): ";
+            while (true) {
+                cin >> t;
+                if (t == -1) break;
+                int result = recentCounter.ping(t);
+                cout << "Number of pings in last 3000ms: " << result << endl;
+            }
+            break;
+        }
+        case 15: {
+            Solution11 solution;
+            int n, low, high;
+            cout << "Enter the number of elements in the BST: ";
+            cin >> n;
+            vector<int> values(n);
+            cout << "Enter the elements: ";
+            for (int i = 0; i < n; ++i) {
+                cin >> values[i];
+            }
+            TreeNode* root = createBinarySearchTree(values);
+            cout << "Enter the low value: ";
+            cin >> low;
+            cout << "Enter the high value: ";
+            cin >> high;
+            int result = solution.rangeSumBST(root, low, high);
+            cout << "Range sum of BST: " << result << endl;
+            break;
+        }
+       
+    case 16: {
+           Solution12 solution;
+           string s, t;
+    cout << "Enter the string 's': ";
+    cin >> s;
+    cout << "Enter the string 't': ";
+    cin >> t;
+
+    int result = solution.findPermutationDifference(s, t);
+    cout << "Permutation difference: " << result << endl;
+
+break;
+ }
+
+ case 17:{
+           Solution13 solution;
+int n; 
+    cout << "Enter the number of tickets: ";
+    cin >> n;
+
+    vector<int> tickets(n);
+    cout << "Enter the ticket prices: ";
+    for (int i = 0; i < n; ++i) {
+        cin >> tickets[i];
+    }
+
+    int k; 
+    cout << "Enter the index of the ticket you want to buy: ";
+    cin >> k;
+
+    Solution sol;
+    int result = solution.timeRequiredToBuy(tickets, k);
+    cout << "Time required to buy: " << result << endl;
+
+break;
+ }
+
+case 18:{
+           Solution14 solution;
+
+string input;
+    cout << "Enter a string: ";
+    cin >> input;
+
+    string cleanedString = solution.makeGood(input);
+    cout << "Cleaned string: " << cleanedString << endl;
+ break;
+}
+
+ case 19:{
+        Solution15 solution;
+ int n; 
+    cout << "Enter the number of elements: ";
+    cin >> n;
+
+    vector<int> nums(n);
+    cout << "Enter the elements: ";
+    for (int i = 0; i < n; ++i) {
+        cin >> nums[i];
+    }
+
+    int identicalPairs = solution.numIdenticalPairs(nums);
+    cout << "Number of identical pairs: " << identicalPairs << endl;
+    break;
+  }
+
+ case 20:{
+           Solution16 solution;
+           vector<int>input;
+           int n;
+    cout << "Enter the number of elements: ";
+    cin >> n;
+
+    cout << "Enter " << n << " elements: ";
+    for (int i = 0; i < n; i++) {
+        int num;
+        cin >> num;
+        input.push_back(num);
+    }
+
+    vector<int> result = solution.smallerNumbersThanCurrent(input);
+
+    cout << "Result: ";
+    for (int num : result) {
+        cout << num << " ";
+    }
+    cout << endl;
+      break;
+ }
+    }
+    return 0;
+}
+
